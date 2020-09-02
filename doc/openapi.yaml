@@ -1,0 +1,209 @@
+openapi: 3.0.1
+info:
+  title: Hotel API explorer
+  description: This is a API explorer for hotel API
+  version: 1.0.0
+servers:
+- url: http://localhost:3000/
+tags: 
+- name: Hotel
+  description: Operations for hotel
+paths:
+  /hotel:
+    post:
+      tags: 
+        - Hotel
+      summary: Add a new hotel
+      description: Returns a single hotel
+      operationId: addHotel
+      requestBody:
+        description: Hotel object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelRequest'
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelResponse'
+        400:
+          description: error
+      x-codegen-request-body-name: body
+    get:
+      tags: 
+        - Hotel
+      summary: Get all hotels
+      description: Returns an array of hotels
+      operationId: getAllHotel
+      responses:
+        200:
+          description: successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/HotelResponse'
+        400:
+          description: error
+          content: {}
+      x-codegen-request-body-name: body
+  /hotel/{id}:
+    get:
+      tags:
+        - Hotel
+      summary: Get a Hotel by it's ID
+      description: Returns a single hotel
+      operationId: getHotelById
+      parameters: 
+        - name: id
+          in: path
+          description: ID of the hotel to return
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelResponse'
+        400:
+          description: error
+      x-codegen-request-body-name: body
+    patch:
+      tags:
+        - Hotel
+      summary: Update a Hotel by it's ID
+      description: Updates a hotel
+      operationId: updateHotelById
+      requestBody:
+        description: Hotel object that needs to be added to the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HotelRequest'
+        required: true
+      parameters: 
+        - name: id
+          in: path
+          description: ID of the hotel to update
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: error
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+        - Hotel
+      summary: Delete a Hotel by it's ID
+      description: deletes a hotel
+      operationId: deleteHotelById
+      parameters: 
+        - name: id
+          in: path
+          description: ID of the hotel to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successful operation
+          content: {}
+        400:
+          description: error
+          content: {}
+      x-codegen-request-body-name: body
+  /hotel/{id}/book:
+    post:
+      tags:
+        - Hotel
+      summary: Book a hotel by it's ID
+      description: books a hotel
+      operationId: bookHotelByID
+      parameters: 
+        - name: id
+          in: path
+          description: ID of the hotel to book
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: successfull operation
+          content: {}
+        400:
+          description: error
+          content: {}
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    HotelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 10
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 5
+        category:
+          type: string
+          enum:
+            - hotel
+            - alternative
+            - hostel
+            - lodge
+            - resort
+            - guest-house
+        location:
+          $ref: '#/components/schemas/Location'
+        image:
+          type: string
+        reputation:
+          type: integer
+          minimum: 0
+          maximum: 1000
+        price:
+          type: integer
+        availability:
+          type: integer
+          minimum: 0
+    HotelResponse:
+      allOf: 
+        - $ref: '#/components/schemas/HotelRequest'
+        - type: object
+          properties:
+            reputationBadge:
+              type: string
+              enum:
+                - green
+                - yellow
+                - red
+    Location:
+      type: object
+      properties:
+        city:
+          type: string
+        state:
+          type: string
+        country:
+          type: string
+        zip_code:
+          type: integer
+          minLength: 5
+          maxLength: 5
+        address:
+          type: string

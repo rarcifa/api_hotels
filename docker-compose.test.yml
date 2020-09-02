@@ -1,0 +1,21 @@
+version: "3"
+services:
+    app:
+        container_name: node_api
+        restart: always
+        build:
+            context: .
+            dockerfile: Dockerfile.test
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - "3000:3000"
+        links:
+            - mongo
+        depends_on:
+            - mongo
+    mongo:
+        container_name: mongo
+        image: mongo
+        ports:
+            - '27017:27017'
